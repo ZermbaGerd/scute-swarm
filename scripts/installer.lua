@@ -1,20 +1,20 @@
 
 --[[
-    Our installer module! Just run: 
-        wget "https://raw.githubusercontent.com/comp484-IntroToAI/semester-project-gavin-wesley-and-henry/refs/heads/main/scripts/installer.lua" installer
+    The installer module! Just run: 
+        wget "https://raw.githubusercontent.com/ZermbaGerd/scute-swarm/refs/heads/main/scripts/installer.lua" installer
     to get this file
 ]]
 function install()
 
     -- STARTUP (this runs when the computer turns on - gets data from a disk drive or just goes straight into main)
-    shell.run("wget", "https://raw.githubusercontent.com/ZermbaGerd/scute-swarm/refs/heads/main/scripts/main.lua", "startup")
+    shell.run("wget","https://raw.githubusercontent.com/ZermbaGerd/scute-swarm/refs/heads/main/scripts/startup.lua", "startup")
 
     -- MAIN (this is the main loop) (main)
-    shell.run("wget", "https://raw.githubusercontent.com/ZermbaGerd/scute-swarm/refs/heads/main/scripts/main.lua", "main")
+    shell.run("wget","https://raw.githubusercontent.com/ZermbaGerd/scute-swarm/refs/heads/main/scripts/main.lua", "main")
     
     -- SMART ACTIONS (smac)
-    shell.run("wget", "https://raw.githubusercontent.com/ZermbaGerd/scute-swarm/refs/heads/main/smartActions.lua", "smartActions")
-    
+    shell.run("wget","https://raw.githubusercontent.com/ZermbaGerd/scute-swarm/refs/heads/main/scripts/smartActions.lua", "smartActions")
+
     -- CALIBRATION (calibration)
     shell.run("wget","https://raw.githubusercontent.com/ZermbaGerd/scute-swarm/refs/heads/main/scripts/calibration.lua", "calibration")
 
