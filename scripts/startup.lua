@@ -1,3 +1,7 @@
+--[[
+        This is the code the turtle will run when it turns on. If it finds a disk drive near it, it copies code from the disk drive and runs
+]]
+
 print('This computer just started up')
 if peripheral.find('drive') then
     print('found a disk drive near the turtle')

@@ -132,6 +132,20 @@ function calibration.setY()
     return true
 end
 
+-- Does calibration.setY, unless we already have an internal y-value, in which case it just returns true
+function calibration.calibrate()
+    settings.load()
+    if settings.get("yLevel") ~= nil then
+        return true
+    else
+        goToBedrock()
+        goToTopOfBedrock()
+        settings.set("yLevel", -59)
+        settings.save()
+    end
+    return true
+end
+
 
 
 -- did set y alr :)
