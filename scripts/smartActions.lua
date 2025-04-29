@@ -452,6 +452,20 @@ end
 
         --[[    CALIBRATION FUNCTIONS       ]]--
 
+-- Returns true if the turtle's current fuel level is above its minimum limit, false if it isn't
+function smartActions.hasEnoughFuel()
+    local fuelAmount = turtle.getFuelLevel()
+    if fuelAmount == "unlimited" then
+        return true
+    end
+
+    if fuelAmount < globals.minimumFuel then
+        return false
+    end
+
+    return true
+end
+
 -- sets the turtle's internal y value to a value. Expects settings to be loaded already
 -- Should break if setting to nil, probably
 function smartActions.setY(yValue)
