@@ -4,15 +4,28 @@ local smartMine = {}
 
 local smac = require("smartActions")
 
-
 --[[
     Digs in a straight line until it sees a block (in front, above, or below, but not left or right) 
-    with either name1 or name2. These should be the regular ore and the deepslate version of the ore
+    with either name1 or name2. These should be the regular ore and the deepslate version of the ore.
+
+    Before every move, we check if we have enough fuel. If we don't, it immediately breaks and returns false
 ]]
 local function digUntilFind(name1, name2)
     local foundOre = false
+    local lookingForFuel = false
+    if name1 == "minecraft:lava" or name1 == "minecraft:fuel" then
+        lookingForFuel = true
+    end
 
     while not foundOre do
+        -- If we're not looking for fuel, and we don't have enough fuel, return false and break from the function
+        if not lookingForFuel then
+            if not smac.hasEnoughFuel then
+                return false
+            end
+        end
+        
+        -- otherwise, check each block around us for the block and return true if we find it
         local has_block, details = turtle.inspect()
         if has_block then
             if details["name"] == name1 or details["name"] == name2 then
@@ -36,68 +49,96 @@ local function digUntilFind(name1, name2)
                 return true
             end
         end
-
+        -- after checking each block, go forward
         smac.goForward()
     end
 end
 
 --[[
     Goes to the y-level for an ore, and then mines in a straight line until it finds that resource.
-    Once it finds that resource, it dumps its excess items and mines the whole vein.
+    Once it finds that resource, it dumps its excess items and mines the whole vein. At any point, if it
+    goes below the fuel stockpile requirement, then it retuns false and exits the program.
 ]]
 function smartMine.mineForBasicOre(ore)
     -- Y-levels to mine at are taken from https://minecraft.wiki/w/Ore#Distribution as of 11/4/24
+
     if ore == "diamond" or ore == "diamonds" then
         smac.goToY(-59)
-        digUntilFind("minecraft:deepslate_diamond_ore", "minecraft:diamond_ore")
+        -- This digUntilFind check is what determines whether we have run out of fuel. If it returns false, we should break
+        -- so we can go search for fuel in the 'main' loop
+        local digResult = digUntilFind("minecraft:deepslate_diamond_ore", "minecraft:diamond_ore")
+        if digResult == true then
         smac.smartDump()
         smartMine.mineVein("minecraft:deepslate_diamond_ore")
         smartMine.mineVein("minecraft:diamond_ore")
+            return true
+        else
+            return false
+        end
 
     elseif ore == "redstone" then
         smac.goToY(-59)
-        digUntilFind("minecraft:deepslate_redstone_ore", "minecraft:redstone_ore")
+        local digResult = digUntilFind("minecraft:deepslate_redstone_ore", "minecraft:redstone_ore")
+        if digResult == true then
         smac.smartDump()
         smartMine.mineVein("minecraft:deepslate_redstone_ore")
         smartMine.mineVein("minecraft:redstone_ore")
-    
+            return true
+        else
+            return false
+        end
 
     elseif ore == "lapis" or ore == "lapis lazuli" then
         smac.goToY(-2)
-        digUntilFind("minecraft:deepslate_lapis_ore", "minecraft:lapis_ore")
+        local digResult = digUntilFind("minecraft:deepslate_lapis_ore", "minecraft:lapis_ore")
+        if digResult == true then 
         smac.smartDump()
         smartMine.mineVein("minecraft:deepslate_lapis_ore")
         smartMine.mineVein("minecraft:lapis_ore")
+            return true
+        else
+            return false
+        end
 
 
     elseif ore == "iron" then
         smac.goToY(14)
-        digUntilFind("minecraft:deepslate_iron_ore", "minecraft:iron_ore")
+        local digResult = digUntilFind("minecraft:deepslate_iron_ore", "minecraft:iron_ore")
+        if digResult == true then
         smac.smartDump()
         smartMine.mineVein("minecraft:deepslate_iron_ore")
         smartMine.mineVein("minecraft:iron_ore")
-    
-
-    elseif ore == "coal" or ore == "fuel" then
-        smac.goToY(45)
-        digUntilFind("minecraft:deepslate_coal_ore", "minecraft:coal_ore")
-        smac.smartDump()
-        smartMine.mineVein("minecraft:deepslate_coal_ore")
-        smartMine.mineVein("minecraft:coal_ore")
+            return true
+        else
+            return false
+        end
     
     -- this is a temp way to find sand w/o sticking to a surface
     -- based on the idea that we mostly want sand to grow sugarcane on, so it will be at water level
     -- 62 for the y should keep us at the top block of rivers / oceans, so we are walking through water
     elseif ore == "sand" then
         smac.goToY(62)
-        digUntilFind("minecraft:sand", "NONE")
+        local digResult = digUntilFind("minecraft:sand", "NONE")
+        if digResult == true then 
         smac.smartDump()
         smac.minePrism(4,3,'top')
-    
+            return true
+        else
+            return false
+        end
+        
+    elseif ore == "lava" or ore == "fuel" then
+        smac.goToY(-55)
+        digUntilFind("minecraft:lava", "NONE")
+        -- select a lava bucket if we have one, if not select a bucket
+        if smac.selectItem("minecraft:lava_bucket") == false then
+            smac.selectItem("minecraft:bucket")
+        end
+        smartMine.gatherLava(0, 5)
     else
         print("invalid ore option")
+        return false
     end
-
 end
 
 
