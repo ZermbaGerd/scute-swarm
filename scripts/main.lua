@@ -10,8 +10,17 @@ local calibration = require("calibration")
 local smartActions = require("smartActions")
 
 
--- ALL THE CALIBRATION TO START WITH
-calibration.calibrate()
+-- Start by checking for Y/calibrating Y
+
+local calibrated = calibration.checkForY()
+-- the only time we're not calibrated is if we were just invented, so we can safely refuel and calibrate
+if not calibrated then
+    if not smartActions.hasEnoughFuel() then
+        smartActions.selectItem("minecraft:lava_bucket")
+        turtle.refuel()
+    end
+    calibration.calibrateY()
+end
 
 
 --[[
@@ -24,6 +33,7 @@ calibration.calibrate()
 ]]
 while true do
     if smartActions.hasEnoughFuel() then
+        print("had enough fuel in main loop")
         if not smartActions.isResourceSatisfied("minecraft:diamond") then
             smartMine.mineForBasicOre("diamonds")
         
@@ -48,6 +58,10 @@ while true do
             smartCraft.completeCraftingProcess()
         end
     else
+        print("didn't have enough fuel in main loop")
+        -- if(smartActions.selectItem("minecraft:lava_bucket")) then
+        --     turtle.refuel()
+        -- end
         smartMine.mineForBasicOre("fuel")
     end
 end
