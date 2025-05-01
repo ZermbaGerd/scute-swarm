@@ -26,7 +26,7 @@ globals.maximumFuel = 20000
 globals.whitelisted = {}
 local whitelistedNames = {"minecraft:diamond", "minecraft:redstone", "minecraft:raw_iron", "minecraft:lapis_lazuli", 
                     "minecraft:sugar_cane", "minecraft:cobblestone", "minecraft:sand", "minecraft:dirt", 
-                    "minecraft:birch_sapling", "minecraft:birch_log", "minecraft:chest"}
+                    "minecraft:birch_sapling", "minecraft:birch_log", "minecraft:chest", "minecraft:bucket", "minecraft:lava_bucket"}
 for index,name in ipairs(whitelistedNames) do
     globals.whitelisted[name] = name
 end
@@ -58,8 +58,7 @@ globals.resourceCount = {}
     globals.resourceCount["minecraft:cobblestone"] = 30
     globals.resourceCount["minecraft:sand"] = 6
     globals.resourceCount["minecraft:birch_log"] = 11
-    -- Maybe include saplings here too? so that we can easily check in main
-
+    globals.resourceCount["minecraft:birch_sapling"] = 4
 
             -- ============
             -- CRAFTING RECIPES
