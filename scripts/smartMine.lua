@@ -178,16 +178,112 @@ function smartMine.mineVein(blockName)
         smac.goForward() 
     end
 
-
-    -- TODO: give this a meaningful return message
-    return {true, "mined"}
+    return true
 end
 
------
--- TODO
+--[[
+    Recursively gathers a pool of lava. Checks each direction for lava, and if it's there, it will refuel from its current lava bucket, and then gather that lava
+    and move into its spot. Then it recursively calls again.
 
--- FIND SAND, WOOD, AND WATER.
--- GROW SUGARCANE
+    Assumes that we are already selecting a bucket!! If we swap our selected item at any point in this process it will break. Making it check in the function
+    would be bad, because our item selecting iterates through the whole inventory, which is really slow if we do it at every recursive step
+
+    The logic should work regardless of if we have an empty bucket or lava bucket. We always refuel right before gathering a new lava block, so when we recurse
+    we should always end with a filled lava bucket in our inventory to give to our child.
+]]
+function smartMine.gatherLava(depth, maxDepth)
+    print(("called recursive lava gather function with depth %d").format(depth))
+    
+    -- If we've reached mass recursion depth, just return
+    if depth > maxDepth then
+        return false
+    end
+
+    -- check above
+    local has_block, details = turtle.inspectUp()
+    if has_block then
+        if details["name"] == "minecraft:lava" then
+            turtle.refuel()
+            turtle.placeUp()
+            smac.goUp()
+            smartMine.gatherLava(depth+1, maxDepth)
+            smac.goDown()
+        end
+    end
+
+    -- check below
+    has_block, details = turtle.inspectDown()
+    if has_block then
+        if details["name"] == "minecraft:lava" then
+            turtle.refuel()
+            turtle.placeDown()
+            smac.goDown()
+            smartMine.gatherLava(depth+1, maxDepth)
+            smac.goUp()
+        end
+    end
+
+    -- check in front
+    has_block, details = turtle.inspect()
+    if has_block then
+        if details["name"] == "minecraft:lava" then
+            turtle.refuel()
+            turtle.place()
+            smac.goForward()
+            smartMine.gatherLava(depth+1, maxDepth)
+            smac.goBackward()
+        end
+    end
+
+    -- check to the left
+    turtle.turnLeft()
+    has_block, details = turtle.inspect()
+    if has_block then
+        if details["name"] == "minecraft:lava" then
+            turtle.refuel()
+            turtle.place()
+            smac.goForward()
+            smartMine.gatherLava(depth+1, maxDepth)
+            smac.goBackward()
+        end
+    end
+    turtle.turnRight()
+
+    -- check to the right
+    turtle.turnRight()
+    has_block, details = turtle.inspect()
+    if has_block then
+        if details["name"] == "minecraft:lava" then
+            turtle.refuel()
+            turtle.place()
+            smac.goForward()
+            smartMine.gatherLava(depth+1, maxDepth)
+            smac.goBackward()
+        end
+    end
+    turtle.turnLeft()
+
+    -- check behind
+    smac.turn180()
+    has_block, details = turtle.inspect()
+    local behind_moved = false
+    if has_block then
+        if details["name"] == "minecraft:lava" then
+            behind_moved = true
+            turtle.refuel()
+            turtle.place()
+            smac.goForward()
+            smartMine.gatherLava(depth+1, maxDepth)
+        end
+    end
+    -- reorient regardless, and move back into slot if we had moved forward
+    smac.turn180()
+    if behind_moved == true then 
+        smac.goForward() 
+    end
+
+    return true
+end
 
 ------ RETURN LIBRARY -------
 return smartMine
