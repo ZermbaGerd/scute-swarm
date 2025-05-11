@@ -222,6 +222,23 @@ function smartMine.mineVein(blockName)
     return true
 end
 
+
+--[[
+    Helper function that checks the details of a block to see if it is a full block of lava. Just checking the name doesn't work, because sometimes
+    it sees what should called "minecraft:flowing_lava" and still thinks it's lava. Just check the height of the lava to check.
+
+    Accepts a "details" returned from a turtle.inspect() function. Returns true if it's a full lava block, false if it's not.
+]]
+local function checkLava(details)
+    if details["name"] ~= "minecraft:lava" then
+        return false
+    elseif details["state"]["level"] ~= 0 then
+        return false
+    else
+        return true
+    end
+end
+
 --[[
     Recursively gathers a pool of lava. Checks each direction for lava, and if it's there, it will refuel from its current lava bucket, and then gather that lava
     and move into its spot. Then it recursively calls again.
@@ -243,7 +260,7 @@ function smartMine.gatherLava(depth, maxDepth)
     -- check above
     local has_block, details = turtle.inspectUp()
     if has_block then
-        if details["name"] == "minecraft:lava" then
+        if checkLava(details) then
             turtle.refuel()
             turtle.placeUp()
             smac.goUp()
@@ -255,7 +272,7 @@ function smartMine.gatherLava(depth, maxDepth)
     -- check below
     has_block, details = turtle.inspectDown()
     if has_block then
-        if details["name"] == "minecraft:lava" then
+        if checkLava(details) then
             turtle.refuel()
             turtle.placeDown()
             smac.goDown()
@@ -267,7 +284,7 @@ function smartMine.gatherLava(depth, maxDepth)
     -- check in front
     has_block, details = turtle.inspect()
     if has_block then
-        if details["name"] == "minecraft:lava" then
+        if checkLava(details) then
             turtle.refuel()
             turtle.place()
             smac.goForward()
@@ -280,7 +297,7 @@ function smartMine.gatherLava(depth, maxDepth)
     turtle.turnLeft()
     has_block, details = turtle.inspect()
     if has_block then
-        if details["name"] == "minecraft:lava" then
+        if checkLava(details) then
             turtle.refuel()
             turtle.place()
             smac.goForward()
@@ -294,7 +311,7 @@ function smartMine.gatherLava(depth, maxDepth)
     turtle.turnRight()
     has_block, details = turtle.inspect()
     if has_block then
-        if details["name"] == "minecraft:lava" then
+        if checkLava(details) then
             turtle.refuel()
             turtle.place()
             smac.goForward()
@@ -309,7 +326,7 @@ function smartMine.gatherLava(depth, maxDepth)
     has_block, details = turtle.inspect()
     local behind_moved = false
     if has_block then
-        if details["name"] == "minecraft:lava" then
+        if checkLava(details) then
             behind_moved = true
             turtle.refuel()
             turtle.place()
