@@ -52,12 +52,12 @@ end
 
 globals.resourceCount = {}
     globals.resourceCount["minecraft:diamond"] = 3
-    globals.resourceCount["minecraft:raw_iron"] = 7
+    globals.resourceCount["minecraft:raw_iron"] = 10
     globals.resourceCount["minecraft:redstone"] = 4
     globals.resourceCount["minecraft:lapis_lazuli"] = 1
     globals.resourceCount["minecraft:cobblestone"] = 30
     globals.resourceCount["minecraft:sand"] = 6
-    globals.resourceCount["minecraft:birch_log"] = 11
+    globals.resourceCount["minecraft:birch_log"] = 12
     globals.resourceCount["minecraft:birch_sapling"] = 4
 
             -- ============
