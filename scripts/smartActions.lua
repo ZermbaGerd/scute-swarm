@@ -416,11 +416,11 @@ end
 
 --[[
     Checks whether we have enough of the given resource to satisfy our resources.
-    For now, to check for logs you just pass it "logs".
     If we pass a resource name that isn't in the list, it returns false.
     Expects to receive the entire item name, including the "minecraft:" part
 ]]
 function smartActions.isResourceSatisfied(resource_name)
+    local count = 0
     -- if the item isn't in resources, return false
     if globals.resourceCount[resource_name] == nil then
         return false
@@ -432,25 +432,22 @@ function smartActions.isResourceSatisfied(resource_name)
     return count >= globals.resourceCount[resource_name]
 end
 
---[[
-    Checks whether we have enough of all of our mining resources, as defined in globals.resources. 
-    If we do, returns true.
-]]
-function smartActions.isRecipeSatisfied()
-    local satisfied = true
-
-    -- for each resource, if that resource isn't satisfied, change satisfied to false
-    for resource, count in pairs(globals.resourceCount) do
-        if not smartActions.isResourceSatisfied(resource) then
-            satisfied = false
-        end
-    end
-
-    return satisfied
-end
-
 
         --[[    CALIBRATION FUNCTIONS       ]]--
+
+-- Returns true if the turtle's current fuel level is above its minimum limit, false if it isn't
+function smartActions.hasEnoughFuel()
+    local fuelAmount = turtle.getFuelLevel()
+    if fuelAmount == "unlimited" then
+        return true
+    end
+
+    if fuelAmount < globals.minimumFuel then
+        return false
+    end
+
+    return true
+end
 
 -- sets the turtle's internal y value to a value. Expects settings to be loaded already
 -- Should break if setting to nil, probably

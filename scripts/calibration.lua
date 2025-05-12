@@ -118,7 +118,7 @@ end
 -- Places the turtle one layer above bedrock, and sets its internal y to -59. Main function to use
 -- if the y-value in settings isn't set yet, or if we run into some other problem that happens because
 -- of uncalibrated y-values
-function calibration.setY()
+function calibration.calibrateY()
     goToBedrock()
     goToTopOfBedrock()
 
@@ -132,6 +132,15 @@ function calibration.setY()
     return true
 end
 
+-- Checks if we already have a saved y-value.
+function calibration.checkForY()
+    settings.load()
+    if settings.get("yLevel") ~= nil then
+        return true
+    else
+        return false
+    end
+end
 
 
 -- did set y alr :)

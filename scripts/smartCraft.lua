@@ -540,7 +540,6 @@ function smartCraft.craftRecipe(recipeList)
     end
 
     turtle.craft()
-    -- smartCraft.dumpAllItems() -- i think we actually want to keep the item in the inventory after
 end
 
 
@@ -569,14 +568,13 @@ function smartCraft.craftTurtle()
     smartCraft.craftRecipe(globals.craftingRecipes["minecraft:diamond_pickaxe"])
     smartCraft.craftRecipe(globals.craftingRecipes["minecraft:crafting_table"]) -- four planks
     smartCraft.craftRecipe(globals.craftingRecipes["minecraft:chest"]) -- eight planks for chest for new guy to hold
-
-    -- TODO: figure out if add chest / water buckets to this
+    smartCraft.craftRecipe(globals.craftingRecipes["minecraft:bucket"])
     
-
+    
     -- craft all of our mechanical bits, ending with the fully equipped turtle
     smartCraft.craftRecipe(globals.craftingRecipes["minecraft:glass_pane"])
     smartCraft.craftRecipe(globals.craftingRecipes["computercraft:computer"])
-    smartCraft.craftRecipe(globals.craftingRecipes["minecraft:chest"]) -- eight planks for chest to craft turtle
+    smartCraft.craftRecipe(globals.craftingRecipes["minecraft:chest"]) 
     smartCraft.craftRecipe(globals.craftingRecipes["computercraft:turtle"])
     smartCraft.craftRecipe(globals.craftingRecipes["computercraft:crafty_turtle"])
     smartCraft.craftRecipe(globals.craftingRecipes["computercraft:miney_crafty_turtle"])
@@ -588,13 +586,14 @@ end
 ]]
 function smartCraft.prepSmelting()
     -- each plank smelts 1.5 items, so we need:
-    smartCraft.craftRecipe(globals.craftingRecipes["minecraft:birch_planks"])   -- 10 planks  * 1.5 for 14 stone (2 planks left-over)
+    smartCraft.craftRecipe(globals.craftingRecipes["minecraft:birch_planks"])   -- 10 planks * 1.5 for 14 stone (2 planks leftover)
     smartCraft.craftRecipe(globals.craftingRecipes["minecraft:birch_planks"])
+    smartCraft.craftRecipe(globals.craftingRecipes["minecraft:birch_planks"])
+
+    smartCraft.craftRecipe(globals.craftingRecipes["minecraft:birch_planks"])   -- 7 planks * 1.5 for 10 iron (1 plank left over)
     smartCraft.craftRecipe(globals.craftingRecipes["minecraft:birch_planks"])
 
     smartCraft.craftRecipe(globals.craftingRecipes["minecraft:birch_planks"])   -- 4 planks * 1.5 for 6 glass (no planks left-over)
-
-    smartCraft.craftRecipe(globals.craftingRecipes["minecraft:birch_planks"])   -- 5 planks * 1.5 for 7 iron (use the 2 planks left over from stone to supplement)
 
     -- and we need the furnace
     smartCraft.craftRecipe(globals.craftingRecipes["minecraft:furnace"])
@@ -626,31 +625,37 @@ function smartCraft.smelt()
     turtle.place()
     smartCraft.dumpAllItems()
 
-    -- get our furnace, fuel, and smelting goals
+    -- get our furnace, fuel, and smelting materials
     smartCraft.getItemFromChest('minecraft:furnace', 1)
-    smartCraft.getItemFromChest('minecraft:birch_planks',19)
+
+    smartCraft.getItemFromChest('minecraft:birch_planks',20)
+
     smartCraft.getItemFromChest('minecraft:cobblestone', 14)
     smartCraft.getItemFromChest('minecraft:sand', 6)
-    smartCraft.getItemFromChest('minecraft:raw_iron', 7)
+    smartCraft.getItemFromChest('minecraft:raw_iron', 10)
 
-    -- place the furnace and go above it
+    -- place the furnace
     turtle.turnLeft()
     turtle.place()
-    smartActions.goUp()
-    smartActions.goForward()
 
+    -- put the fuel in
+    smartActions.goDown()
+    smartActions.goForward()
+    smartActions.selectItem('minecraft:birch_planks')
+    turtle.dropUp()
+
+    -- place cobble and wait for it to smelt
+    goAboveFurnace()
     smartActions.selectItem('minecraft:cobblestone')
     turtle.dropDown()
     goUnderFurnace()
 
-    smartActions.selectItem('minecraft:birch_planks')
-    turtle.dropUp()
-    -- TODO refactor this smartActions.countItem shit into smartActions.getItemCount to match turtle
-    while(smartActions.countItem('minecraft:stone') ~= nil and smartActions.countItem('minecraft:stone') < 14) do
+    while(smartActions.countItem('minecraft:stone') < 14) do
         turtle.suckUp()
         os.sleep(2)
     end
 
+    -- place sand and wait for it to smelt
     goAboveFurnace()
     smartActions.selectItem('minecraft:sand')
     turtle.dropDown()
@@ -660,15 +665,17 @@ function smartCraft.smelt()
         os.sleep(2)
     end
 
+    -- place iron and wait for it to smelt
     goAboveFurnace()
     smartActions.selectItem('minecraft:raw_iron')
     turtle.dropDown()
     goUnderFurnace()
-    while(smartActions.countItem('minecraft:iron_ingot') < 7) do
+    while(smartActions.countItem('minecraft:iron_ingot') < 10) do
         turtle.suckUp()
         os.sleep(2)
     end
 
+    -- return to initial position
     turtle.back()
     smartActions.goUp()
     turtle.turnRight()
@@ -700,8 +707,9 @@ function smartCraft.placeTurtle()
     smartCraft.getItemFromChest('computercraft:disk', 1)
     smartCraft.getItemFromChest('computercraft:disk_drive', 1)
     smartCraft.getItemFromChest('minecraft:sugar_cane', 1)
-    smartCraft.getItemFromChest('minecraft:birch_sapling', 1)
+    smartCraft.getItemFromChest('minecraft:birch_sapling', 2)
     smartCraft.getItemFromChest('minecraft:chest', 1)
+    smartCraft.getItemFromChest('minecraft:lava_bucket', 1)
 
     -- Place our disk drive
     turtle.turnRight()
@@ -730,11 +738,17 @@ function smartCraft.placeTurtle()
     turtle.drop()
     smartActions.selectItem("minecraft:chest")
     turtle.drop()
+    smartActions.selectItem('minecraft:lava_bucket')
+    turtle.drop()
 
     -- turn it on
     peripheral.call('front','turnOn')
 end
 
+
+--[[
+    Pick up our chest and all the items in it, then dump anything that isn't used in the main non-crafting loop.
+]]
 function smartCraft.postPartum()
     turtle.turnLeft()
     smartActions.goForward()
@@ -746,6 +760,10 @@ function smartCraft.postPartum()
     smartActions.smartDump()
 end
 
+
+--[[
+    Actually do all the crafting together.
+]]
 function smartCraft.completeCraftingProcess()
     -- place our chest and clear our inventory
     smartActions.selectItem('minecraft:chest')

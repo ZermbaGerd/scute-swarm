@@ -3,9 +3,8 @@ local globals = {}
 -------------------
 
 --[[ ===================
-
-This module contains lists of various things that other modules in the library may need.
-Check if an item is in them by checking whether globals.NAME[thingToCheck] ~= nil.
+This module contains lists and value that other modules in the library may need.
+Check if an item is in a list by checking whether globals.NAME[thingToCheck] ~= nil.
 Most are sets, where the key and value in the table are the same thing.
 For some (like global.resourceCount), you can also get a count for the number by doing globals.NAME[thingToCheck]
 
@@ -14,10 +13,20 @@ we need to do the 'for' loops because the pure list versions aren't indexable (w
         treated like strings, and they can't have colons in them! which sucks :(
 -- =================== ]]
 
+            -- ============
+            -- VALUES
+            -- ============
+globals.minimumFuel = 1100
+globals.maximumFuel = 20000
+
+            -- ============
+            -- WHITELIST AND HELPER LISTS
+            -- ============
+
 globals.whitelisted = {}
 local whitelistedNames = {"minecraft:diamond", "minecraft:redstone", "minecraft:raw_iron", "minecraft:lapis_lazuli", 
                     "minecraft:sugar_cane", "minecraft:cobblestone", "minecraft:sand", "minecraft:dirt", 
-                    "minecraft:birch_sapling", "minecraft:birch_log", "minecraft:chest"}
+                    "minecraft:birch_sapling", "minecraft:birch_log", "minecraft:chest", "minecraft:bucket", "minecraft:lava_bucket"}
 for index,name in ipairs(whitelistedNames) do
     globals.whitelisted[name] = name
 end
@@ -29,10 +38,9 @@ for index,name in ipairs(oreNames) do
     globals.ores[name] = name
 end
 
--- lists that may be useful for people in later days: logs, planks, sugarcaneGrowable
--- ============
--- DEFINE RESOURCES + RESOURCE COUNTS FOR MAIN RECIPE
--- ============
+            -- ============
+            -- RESOURCES + RESOURCE COUNTS FOR MAIN RECIPE
+            -- ============
 
 globals.resources = {}
 local resourceNames = {"minecraft:diamond", "minecraft:redstone", "minecraft:raw_iron", "minecraft:lapis_lazuli", 
@@ -44,12 +52,17 @@ end
 
 globals.resourceCount = {}
     globals.resourceCount["minecraft:diamond"] = 3
-    globals.resourceCount["minecraft:raw_iron"] = 7
+    globals.resourceCount["minecraft:raw_iron"] = 10
     globals.resourceCount["minecraft:redstone"] = 4
     globals.resourceCount["minecraft:lapis_lazuli"] = 1
     globals.resourceCount["minecraft:cobblestone"] = 30
     globals.resourceCount["minecraft:sand"] = 6
-    globals.resourceCount["minecraft:birch_log"] = 11
+    globals.resourceCount["minecraft:birch_log"] = 12
+    globals.resourceCount["minecraft:birch_sapling"] = 4
+
+            -- ============
+            -- CRAFTING RECIPES
+            -- ============
 
 globals.craftingRecipes = {}
 globals.craftingRecipes["minecraft:crafting_table"] = 
@@ -72,10 +85,16 @@ globals.craftingRecipes["minecraft:diamond_pickaxe"] =
 "none",                     "minecraft:stick",          "none", 
 "none",                     "minecraft:stick",          "none"}
 
+globals.craftingRecipes["minecraft:bucket"] = 
+{"minecraft:iron_ingot",    "none",                     "minecraft:iron_ingot", 
+"none",                     "minecraft:iron_ingot",     "none", 
+"none",                     "none",                     "none"}
+
 globals.craftingRecipes["minecraft:paper"] = 
 {"minecraft:sugar_cane",        "minecraft:sugar_cane",         "minecraft:sugar_cane", 
 "none",                         "none",                         "none", 
 "none",                         "none",                         "none"}
+
 globals.craftingRecipes["minecraft:blue_dye"] = 
 {"minecraft:lapis_lazuli",      "none",          "none", 
 "none",                         "none",          "none", 
