@@ -68,9 +68,9 @@ function smartMine.mineForBasicOre(ore)
         -- so we can go search for fuel in the 'main' loop
         local digResult = digUntilFind("minecraft:deepslate_diamond_ore", "minecraft:diamond_ore")
         if digResult == true then
-        smac.smartDump()
-        smartMine.mineVein("minecraft:deepslate_diamond_ore")
-        smartMine.mineVein("minecraft:diamond_ore")
+            smac.smartDump()
+            smartMine.mineVein("minecraft:deepslate_diamond_ore")
+            smartMine.mineVein("minecraft:diamond_ore")
             return true
         else
             return false
@@ -80,9 +80,9 @@ function smartMine.mineForBasicOre(ore)
         smac.goToY(-59)
         local digResult = digUntilFind("minecraft:deepslate_redstone_ore", "minecraft:redstone_ore")
         if digResult == true then
-        smac.smartDump()
-        smartMine.mineVein("minecraft:deepslate_redstone_ore")
-        smartMine.mineVein("minecraft:redstone_ore")
+            smac.smartDump()
+            smartMine.mineVein("minecraft:deepslate_redstone_ore")
+            smartMine.mineVein("minecraft:redstone_ore")
             return true
         else
             return false
@@ -92,9 +92,9 @@ function smartMine.mineForBasicOre(ore)
         smac.goToY(-2)
         local digResult = digUntilFind("minecraft:deepslate_lapis_ore", "minecraft:lapis_ore")
         if digResult == true then 
-        smac.smartDump()
-        smartMine.mineVein("minecraft:deepslate_lapis_ore")
-        smartMine.mineVein("minecraft:lapis_ore")
+            smac.smartDump()
+            smartMine.mineVein("minecraft:deepslate_lapis_ore")
+            smartMine.mineVein("minecraft:lapis_ore")
             return true
         else
             return false
@@ -105,9 +105,9 @@ function smartMine.mineForBasicOre(ore)
         smac.goToY(14)
         local digResult = digUntilFind("minecraft:deepslate_iron_ore", "minecraft:iron_ore")
         if digResult == true then
-        smac.smartDump()
-        smartMine.mineVein("minecraft:deepslate_iron_ore")
-        smartMine.mineVein("minecraft:iron_ore")
+            smac.smartDump()
+            smartMine.mineVein("minecraft:deepslate_iron_ore")
+            smartMine.mineVein("minecraft:iron_ore")
             return true
         else
             return false
@@ -120,8 +120,8 @@ function smartMine.mineForBasicOre(ore)
         smac.goToY(62)
         local digResult = digUntilFind("minecraft:sand", "NONE")
         if digResult == true then 
-        smac.smartDump()
-        smac.minePrism(4,3,'top')
+            smac.smartDump()
+            smac.minePrism(4,3,'top')
             return true
         else
             return false
@@ -144,9 +144,14 @@ end
 
 --[[
     Recursively mines a vein of blocks with the given name. Checks every side of the current position for the block,
-    and then, if there was a block there, goes to that spot and recursively repeats
+    and then, if there was a block there, goes to that spot and recursively repeats.
+    
+    If it drops below the acceptable fuel at any point, it returns false
 ]]
 function smartMine.mineVein(blockName)
+    if not smac.hasEnoughFuel() then
+        return false
+    end
     print("called recursive vein mine function")
     -- mine/check above
     local has_block, details = turtle.inspectUp()
