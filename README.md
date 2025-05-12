@@ -7,7 +7,7 @@ Scute Swarm is a self-replication library for CC:Tweaked turtles rooted in Merli
 ## How to Use
 Take a look at INSTALLATION.md for guidance on downloading and enabling ComputerCraft.
 
-Once that's done, re-enter the world and place down a Miney Crafting Turtle (a turtle equipped with a diamond pickaxe and a crafting table). Place 1 piece of Sugar Cane, 2 Birch Saplings, and one Crafting Table into its inventory. Then, you can run this command to download the installer for the program: 
+Once that's done, re-enter the world and place down a Miney Crafting Turtle (a turtle equipped with a diamond pickaxe and a crafting table). Place 1 piece of Sugar Cane, 2 Birch Saplings, 1 Lava Bucket, and 1 Crafting Table into its inventory. Then, you can run this command to download the installer for the program: 
     
     wget "https://raw.githubusercontent.com/ZermbaGerd/scute-swarm/refs/heads/main/scripts/installer.lua" installer
 
