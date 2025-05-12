@@ -628,7 +628,7 @@ function smartCraft.smelt()
     -- get our furnace, fuel, and smelting materials
     smartCraft.getItemFromChest('minecraft:furnace', 1)
 
-    smartCraft.getItemFromChest('minecraft:birch_planks',19)
+    smartCraft.getItemFromChest('minecraft:birch_planks',20)
 
     smartCraft.getItemFromChest('minecraft:cobblestone', 14)
     smartCraft.getItemFromChest('minecraft:sand', 6)
