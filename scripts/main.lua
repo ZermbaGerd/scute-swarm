@@ -14,20 +14,19 @@ local smartActions = require("smartActions")
     Print messages for user to see if they forgot to give an item to the turtle
 ]]
 local needItem = false
-local smac = require("smartActions")
-if smac.countItem("minecraft:chest") < 1 then
+if smartActions.countItem("minecraft:chest") < 1 then
     print("Need a chest")
     needItem = true
 end
-if smac.countItem("minecraft:sugarcane") < 1 then
+if smartActions.countItem("minecraft:sugarcane") < 1 then
     print("Need a piece of sugarcane")
     needItem = true
 end
-if smac.countItem("minecraft:birch_sapling") < 2 then
+if smartActions.countItem("minecraft:birch_sapling") < 2 then
     print("Need at least 2 birch saplings")
     needItem = true
 end
-if smac.countItem("minecraft:bucket") < 1 and smac.countItem("minecraft:lava_bucket") < 1 then
+if smartActions.countItem("minecraft:bucket") < 1 and smartActions.countItem("minecraft:lava_bucket") < 1 then
     print("Need a bucket or a lava bucket. If this is the first time starting, this needs a lava bucket")
     needItem = true
 end
