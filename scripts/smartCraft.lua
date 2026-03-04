@@ -595,6 +595,8 @@ function smartCraft.prepSmelting()
 
     smartCraft.craftRecipe(globals.craftingRecipes["minecraft:birch_planks"])   -- 4 planks * 1.5 for 6 glass (no planks left-over)
 
+    smartCraft.craftRecipe(globals.craftingRecipes["minecraft:birch_planks"])   -- and fuck it let's make an extra 4 just in case
+
     -- and we need the furnace
     smartCraft.craftRecipe(globals.craftingRecipes["minecraft:furnace"])
 end
@@ -628,7 +630,7 @@ function smartCraft.smelt()
     -- get our furnace, fuel, and smelting materials
     smartCraft.getItemFromChest('minecraft:furnace', 1)
 
-    smartCraft.getItemFromChest('minecraft:birch_planks',20)
+    smartCraft.getItemFromChest('minecraft:birch_planks',24)
 
     smartCraft.getItemFromChest('minecraft:cobblestone', 14)
     smartCraft.getItemFromChest('minecraft:sand', 6)
